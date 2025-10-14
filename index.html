@@ -174,17 +174,16 @@
       align-items: flex-start;
       flex-wrap: wrap;
     }
-    .video-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    video {
+    .video-container video {
       border-radius: 16px;
       box-shadow: 0 0 24px #00cfff55;
-      transition: width 0.3s, height 0.3s, box-shadow 0.3s;
+      transition: box-shadow 0.2s, transform 0.2s, width 0.3s, height 0.3s;
       background: var(--bg-dark);
+      cursor: pointer;
+    }
+    .video-container video:hover {
+      box-shadow: 0 0 32px #00cfff99;
+      transform: scale(1.04);
     }
     .video-label {
       color: var(--text-main);
@@ -528,77 +527,98 @@
     });
 
     // Videos: pantalla 80% al reproducir, pequeño al pausar/minimizar/cerrar
-    function setupVideoFullscreen(videoId) {
-      const video = document.getElementById(videoId);
-      const originalWidth = 125;
-      let overlay = null;
+// ...dentro de tu <script>...
 
-      function expandVideo() {
-        // Si ya está expandido, no hacer nada
-        if (overlay) return;
+function setupVideoFullscreen(videoId) {
+  const video = document.getElementById(videoId);
+  const originalWidth = 125;
+  const originalHeight = 70; // Puedes ajustar este valor si tus videos son más altos
 
-        // Crear overlay oscuro
-        overlay = document.createElement('div');
-        overlay.style.position = 'fixed';
-        overlay.style.top = 0;
-        overlay.style.left = 0;
-        overlay.style.width = '100vw';
-        overlay.style.height = '100vh';
-        overlay.style.background = 'rgba(0,16,32,0.85)';
-        overlay.style.zIndex = 2000;
-        overlay.style.display = 'flex';
-        overlay.style.alignItems = 'center';
-        overlay.style.justifyContent = 'center';
+  let overlay = null;
 
-        // Clonar el video y sincronizar el tiempo
-        const expandedVideo = video.cloneNode(true);
-        expandedVideo.style.width = Math.min(window.innerWidth * 0.8, 900) + 'px';
-        expandedVideo.style.maxHeight = '80vh';
-        expandedVideo.style.height = 'auto';
-        expandedVideo.style.boxShadow = '0 0 48px #00cfffcc';
-        expandedVideo.style.background = '#001020';
-        expandedVideo.controls = true;
-        expandedVideo.currentTime = video.currentTime;
-        expandedVideo.muted = video.muted;
-        expandedVideo.volume = video.volume;
-        expandedVideo.play();
+  function restoreSmallVideoSize() {
+    video.style.width = originalWidth + "px";
+    video.style.height = originalHeight + "px";
+  }
 
-        // Al pausar o terminar, cerrar overlay
-        function closeOverlay() {
-          expandedVideo.pause();
-          overlay.remove();
-          overlay = null;
-          // Sincronizar el tiempo de vuelta al video original
-          video.currentTime = expandedVideo.currentTime;
-        }
-        expandedVideo.addEventListener('pause', closeOverlay);
-        expandedVideo.addEventListener('ended', closeOverlay);
+  function expandVideo() {
+    // Si ya está expandido, no hacer nada
+    if (overlay) return;
 
-        // Cerrar al hacer click fuera del video
-        overlay.addEventListener('mousedown', function(e) {
-          if (e.target === overlay) {
-            closeOverlay();
-          }
-        });
+    // Crear overlay oscuro
+    overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.background = 'rgba(0,16,32,0.85)';
+    overlay.style.zIndex = 2000;
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
 
-        // Cerrar con ESC
-        window.addEventListener('keydown', function escListener(e) {
-          if (overlay && e.key === 'Escape') {
-            closeOverlay();
-            window.removeEventListener('keydown', escListener);
-          }
-        });
+    // Clonar el video y sincronizar el tiempo
+    const expandedVideo = video.cloneNode(true);
+    expandedVideo.style.width = Math.min(window.innerWidth * 0.8, 900) + 'px';
+    expandedVideo.style.maxHeight = '80vh';
+    expandedVideo.style.height = 'auto';
+    expandedVideo.style.boxShadow = '0 0 48px #00cfffcc';
+    expandedVideo.style.background = '#001020';
+    expandedVideo.controls = true;
+    expandedVideo.currentTime = video.currentTime;
+    expandedVideo.muted = video.muted;
+    expandedVideo.volume = video.volume;
+    expandedVideo.play();
 
-        overlay.appendChild(expandedVideo);
-        document.body.appendChild(overlay);
-      }
-
-      video.addEventListener('play', expandVideo);
+    // Al pausar o terminar, cerrar overlay y restaurar tamaño
+    function closeOverlay() {
+      expandedVideo.pause();
+      overlay.remove();
+      overlay = null;
+      // Sincronizar el tiempo de vuelta al video original
+      video.currentTime = expandedVideo.currentTime;
+      restoreSmallVideoSize();
     }
+    expandedVideo.addEventListener('pause', closeOverlay);
+    expandedVideo.addEventListener('ended', closeOverlay);
 
-    setupVideoFullscreen('presentacionVideo');
-    setupVideoFullscreen('presentacionVideo2');
-    setupVideoFullscreen('presentacionVideo3');
+    // Cerrar al hacer click fuera del video
+    overlay.addEventListener('mousedown', function(e) {
+      if (e.target === overlay) {
+        closeOverlay();
+      }
+    });
+
+    // Cerrar con ESC
+    window.addEventListener('keydown', function escListener(e) {
+      if (overlay && e.key === 'Escape') {
+        closeOverlay();
+        window.removeEventListener('keydown', escListener);
+      }
+    });
+
+    overlay.appendChild(expandedVideo);
+    document.body.appendChild(overlay);
+  }
+
+  // Siempre que se pause o termine el video pequeño, restaurar tamaño
+  video.addEventListener('pause', restoreSmallVideoSize);
+  video.addEventListener('ended', restoreSmallVideoSize);
+
+  // Antes de expandir, restaurar tamaño y expandir
+  video.addEventListener('play', function() {
+    restoreSmallVideoSize();
+    expandVideo();
+  });
+
+  // Al cargar la página, asegúrate de que todos los videos tengan el mismo tamaño
+  restoreSmallVideoSize();
+}
+
+setupVideoFullscreen('presentacionVideo');
+setupVideoFullscreen('presentacionVideo2');
+setupVideoFullscreen('presentacionVideo3');
 
     // Imágenes: expandir/cerrar al hacer click
     document.querySelectorAll('.img-container img').forEach(img => {
