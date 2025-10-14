@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Asixtore - Sistema de gestión comercial gratuito" />
+  <link rel="icon" type="image/png" href="asixtore.png" />
+  <title>Asixtore</title>
+  <style>
+    :root {
+      --primary: #00cfff;
+      --secondary: #0066ff;
+      --bg-dark: #001020;
+      --bg-gradient: radial-gradient(circle at center, #001020, #000000);
+      --text-main: #b0c7d6;
+      --text-title: #00cfff;
+      --footer-bg: rgba(0, 16, 32, 0.92);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: var(--bg-gradient);
+      color: white;
+      min-height: 100vh;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-bottom: 80px;
+      overflow-x: hidden;
+    }
+    .navbar {
+      width: 100%;
+      background: #01182e;
+      box-shadow: 0 2px 16px #00102088;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 0 0 0 0;
+    }
+    .navbar-content {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 64px;
+    }
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .navbar-logo img {
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 0 10px var(--primary));
+    }
+    .navbar-logo span {
+      font-size: 1.3rem;
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .navbar-menu {
+      display: flex;
+      gap: 24px;
+    }
+    .navbar-menu a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 24px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .navbar-menu a:hover,
+    .navbar-menu a.active {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #fff;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 40px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    .section {
+      width: 100%;
+      background: rgba(0, 16, 32, 0.7);
+      border-radius: 18px;
+      box-shadow: 0 0 24px #00cfff11;
+      padding: 36px 24px 32px 24px;
+      margin-bottom: 16px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.5s;
+    }
+    .section.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .logo-main {
+      width: 160px;
+      height: auto;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 20px var(--primary));
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: var(--text-title);
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.1rem;
+      color: var(--text-main);
+      margin-bottom: 30px;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 12px;
+      width: 100%;
+      align-items: center;
+    }
+    .btn {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      min-width: 220px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--primary);
+    }
+    .section-title {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin: 24px 0 10px 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .videos-row {
+      margin: 24px 0 0 0;
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .video-container video {
+      border-radius: 16px;
+      box-shadow: 0 0 24px #00cfff55;
+      transition: box-shadow 0.2s, transform 0.2s, width 0.3s, height 0.3s;
+      background: var(--bg-dark);
+      cursor: pointer;
+    }
+    .video-container video:hover {
+      box-shadow: 0 0 32px #00cfff99;
+      transform: scale(1.04);
+    }
+    .video-label {
+      color: var(--text-main);
+      font-size: 0.98rem;
+      margin-top: 4px;
+    }
+    .images-row {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .img-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 200px;
+      /* Fija el ancho de la caja */
+    }
+    .img-container img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 0 16px #00cfff33;
+      background: var(--bg-dark);
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .img-container img:hover {
+      box-shadow: 0 0 32px #00cfff99;
+      transform: scale(1.04);
+    }
+    .img-label {
+      color: var(--text-main);
+      font-size: 0.98rem;
+      text-align: center;
+      word-break: break-word;
+    }
+    /* Overlay para imagen expandida */
+    .img-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,16,32,0.85);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .img-overlay img {
+      width: 80vw;
+      max-width: 900px;
+      max-height: 80vh;
+      border-radius: 18px;
+      box-shadow: 0 0 48px #00cfffcc;
+      background: #001020;
+      object-fit: contain;
+      cursor: zoom-out;
+      transition: box-shadow 0.2s;
+    }
+    footer {
+      width: 100%;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      font-size: 0.95rem;
+      color: #88a;
+      background: var(--footer-bg);
+      padding: 16px 0 10px 0;
+      text-align: center;
+      z-index: 100;
+      box-shadow: 0 -2px 16px #00102088;
+    }
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .container {
+        max-width: 98vw;
+        gap: 24px;
+      }
+      .navbar-content {
+        max-width: 98vw;
+        padding: 0 8px;
+      }
+    }
+    @media (max-width: 700px) {
+      .container {
+        max-width: 99vw;
+        gap: 18px;
+      }
+      .navbar-content {
+        flex-direction: column;
+        height: auto;
+        gap: 8px;
+        padding: 8px 0;
+      }
+      .navbar-menu {
+        gap: 10px;
+      }
+      .videos-row, .images-row {
+        flex-direction: column;
+        gap: 24px;
+      }
+      .btn {
+        min-width: 140px;
+        font-size: 1rem;
+        padding: 12px 18px;
+      }
+      .section {
+        padding: 18px 4vw 18px 4vw;
+      }
+    }
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      align-items: flex-start;
+      justify-content: center;
+      margin: 0 auto;
+      max-width: 260px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 1.15rem;
+      text-decoration: none;
+      color: #b0c7d6;
+      background: rgba(0, 16, 32, 0.7);
+      padding: 10px 18px;
+      border-radius: 12px;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 12px #00cfff11;
+    }
+    .contact-item img {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      background: #fff;
+      box-shadow: 0 0 8px #00cfff33;
+      object-fit: cover;
+    }
+    .contact-item:hover {
+      background: linear-gradient(90deg, #00cfff33, #0066ff22);
+      color: #00cfff;
+      box-shadow: 0 0 18px #00cfff55;
+    }
+    .contact-item span {
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-logo">
+        <img src="asixtore.png" alt="Logo Asixtore" />
+        <span>Asixtore</span>
+      </div>
+      <div class="navbar-menu">
+        <a href="#" class="active" data-section="inicio">Inicio</a>
+        <a href="#" data-section="descargas">Descargas</a>
+        <a href="#" data-section="videos">Videos</a>
+        <a href="#" data-section="imagenes">Imágenes</a>
+        <a href="#" data-section="contacto">Contacto</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <!-- INICIO -->
+    <section class="section active" id="section-inicio">
+      <img src="asixtore.png" alt="Logo Asixtore" class="logo-main" />
+      <h1>Asixtore</h1>
+      <p>Sistema de gestión comercial gratuito sin inscripciones</p>
+      <div style="margin-top: 18px; color: #b0c7d6;">
+        <strong>¡Bienvenido!</strong> Descubre cómo Asixtore puede ayudarte a gestionar tu negocio de manera sencilla y eficiente.<br>
+        Usa el menú superior para navegar entre descargas, videos, imágenes y contacto.
+      </div>
+      <div id="stats" style="margin: 18px 0 0 0; color: #b0c7d6; font-size: 0.70rem;">
+        <span id="visitCount"></span> | 
+        <span id="winDownloadCount"></span> | 
+        <span id="macDownloadCount"></span>
+      </div>
+    </section>
+    <!-- DESCARGAS -->
+    <section class="section" id="section-descargas">
+      <div class="section-title">Descargas</div>
+      <div class="btn-group">
+        <a href="https://github.com/supervic1123/asixtore/raw/main/AsixtoreInstaller.exe" class="btn">Descarga para Windows</a>
+        <a href="https://github.com/supervic1123/asixtore/raw/main/Asixtore.dmg" class="btn">Descarga para MacOS </a>
+      </div>
+      <div style="color: #b0c7d6; margin-top: 18px;">
+        <span>Usuario y contraseña admin</span><br><br>
+        <span>¿Necesitas ayuda para instalar?</span>
+        <br>
+        <span>Revisa los videos en la sección <b>Videos</b> del menú.</span>
+      </div>
+    </section>
+    <!-- VIDEOS -->
+    <section class="section" id="section-videos">
+      <div class="section-title">Guías en video</div>
+      <div class="videos-row">
+        <div class="video-container">
+          <video
+            id="presentacionVideo"
+            width="125"
+            controls
+            poster="asixtore.png"
+          >
+            <source src="https://github.com/supervic1123/asixtore/raw/main/video.mp4" type="video/mp4">
+            Tu navegador no soporta la reproducción de video.
+          </video>
+          <div class="video-label">Instalar en Windows 10 y 11</div>
+        </div>
+        <div class="video-container">
+          <video
+            id="presentacionVideo2"
+            width="125"
+            controls
+            poster="asixtore.png"
+          >
+            <source src="https://github.com/supervic1123/asixtore/raw/main/video1.mp4" type="video/mp4">
+            Tu navegador no soporta la reproducción de video.
+          </video>
+          <div class="video-label">Instrucciones de uso</div>
+        </div>
+        <div class="video-container">
+          <video
+            id="presentacionVideo3"
+            width="125"
+            controls
+            poster="asixtore.png"
+          >
+            <source src="https://github.com/supervic1123/asixtore/raw/main/video2.mp4" type="video/mp4">
+            Tu navegador no soporta la reproducción de video.
+          </video>
+          <div class="video-label">Configuraciones</div>
+        </div>
+      </div>
+    </section>
+    <!-- IMAGENES -->
+    <section class="section" id="section-imagenes">
+      <div class="section-title">Imágenes del sistema</div>
+      <div class="images-row">
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/login.png" alt="Login" />
+          <div class="img-label">Login</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/menu.png" alt="Menu" />
+          <div class="img-label">Menu</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/productos.png" alt="Productos" />
+          <div class="img-label">Productos</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/stock.png" alt="Stock" />
+          <div class="img-label">Stock</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/ventas.png" alt="Ventas" />
+          <div class="img-label">Ventas</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/informes.png" alt="Informes" />
+          <div class="img-label">Informes</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/backup.png" alt="Backup" />
+          <div class="img-label">Backup</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/credenciales.png" alt="Credenciales" />
+          <div class="img-label">Credenciales</div>
+        </div>
+        <div class="img-container">
+          <img src="https://raw.githubusercontent.com/supervic1123/asixtore/refs/heads/main/tiket.png" alt="Tiket" />
+          <div class="img-label">Tiket</div>
+        </div>
+      </div>
+      <div style="color: #b0c7d6; margin-top: 18px;">
+        <span>¿Quieres ver más imágenes? Solicítalas por WhatsApp o correo.</span>
+      </div>
+    </section>
+    <!-- CONTACTO -->
+    <section class="section" id="section-contacto">
+      <div class="section-title" style="font-size:1.6rem; margin-bottom: 24px;">Contacto</div>
+      <div class="contact-list">
+        <a href="mailto:vikena.smart@gmail.com" class="contact-item" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg" alt="Correo" />
+          <span>Correo <span style="color:#00cfff;">@</span></span>
+        </a>
+        <a href="https://wa.me/573004051510" class="contact-item" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+          <span>WhatsApp</span>
+        </a>
+        <a href="https://www.instagram.com/vikenasmart/" class="contact-item" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" />
+          <span>Instagram</span>
+        </a>
+      </div>
+    </section>
+  </div>
+  <footer>
+    Creado por <strong>vikena.smart</strong> |
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg" alt="Correo" style="width:18px;vertical-align:middle;margin-right:4px;border-radius:4px;background:#fff;">
+    <a href="mailto:vikena.smart@gmail.com">vikena.smart@gmail.com</a> |
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:18px;vertical-align:middle;margin-right:4px;border-radius:4px;background:#fff;">
+    <a href="https://wa.me/573004051510" target="_blank">WhatsApp</a> |
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" style="width:18px;vertical-align:middle;margin-right:4px;border-radius:4px;">
+    <a href="https://www.instagram.com/vikenasmart/" target="_blank">Instagram</a>
+  </footer>
+  <script>
+    // Navegación de menú
+    const menuLinks = document.querySelectorAll('.navbar-menu a');
+    const sections = document.querySelectorAll('.section');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        menuLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        const sectionId = 'section-' + this.dataset.section;
+        sections.forEach(sec => {
+          if (sec.id === sectionId) {
+            sec.classList.add('active');
+          } else {
+            sec.classList.remove('active');
+          }
+        });
+        // Scroll to top on section change
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    // Videos: pantalla 80% al reproducir, pequeño al pausar/minimizar/cerrar
+// ...dentro de tu <script>...
+
+function setupVideoFullscreen(videoId) {
+  const video = document.getElementById(videoId);
+  const originalWidth = 125;
+  const originalHeight = 70; // Puedes ajustar este valor si tus videos son más altos
+
+  let overlay = null;
+
+  function restoreSmallVideoSize() {
+    video.style.width = originalWidth + "px";
+    video.style.height = originalHeight + "px";
+  }
+
+  function expandVideo() {
+    // Si ya está expandido, no hacer nada
+    if (overlay) return;
+
+    // Crear overlay oscuro
+    overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.background = 'rgba(0,16,32,0.85)';
+    overlay.style.zIndex = 2000;
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+
+    // Clonar el video y sincronizar el tiempo
+    const expandedVideo = video.cloneNode(true);
+    expandedVideo.style.width = Math.min(window.innerWidth * 0.8, 900) + 'px';
+    expandedVideo.style.maxHeight = '80vh';
+    expandedVideo.style.height = 'auto';
+    expandedVideo.style.boxShadow = '0 0 48px #00cfffcc';
+    expandedVideo.style.background = '#001020';
+    expandedVideo.controls = true;
+    expandedVideo.currentTime = video.currentTime;
+    expandedVideo.muted = video.muted;
+    expandedVideo.volume = video.volume;
+    expandedVideo.play();
+
+    // Al pausar o terminar, cerrar overlay y restaurar tamaño
+    function closeOverlay() {
+      expandedVideo.pause();
+      overlay.remove();
+      overlay = null;
+      // Sincronizar el tiempo de vuelta al video original
+      video.currentTime = expandedVideo.currentTime;
+      restoreSmallVideoSize();
+    }
+    expandedVideo.addEventListener('pause', closeOverlay);
+    expandedVideo.addEventListener('ended', closeOverlay);
+
+    // Cerrar al hacer click fuera del video
+    overlay.addEventListener('mousedown', function(e) {
+      if (e.target === overlay) {
+        closeOverlay();
+      }
+    });
+
+    // Cerrar con ESC
+    window.addEventListener('keydown', function escListener(e) {
+      if (overlay && e.key === 'Escape') {
+        closeOverlay();
+        window.removeEventListener('keydown', escListener);
+      }
+    });
+
+    overlay.appendChild(expandedVideo);
+    document.body.appendChild(overlay);
+  }
+
+  // Siempre que se pause o termine el video pequeño, restaurar tamaño
+  video.addEventListener('pause', restoreSmallVideoSize);
+  video.addEventListener('ended', restoreSmallVideoSize);
+
+  // Antes de expandir, restaurar tamaño y expandir
+  video.addEventListener('play', function() {
+    restoreSmallVideoSize();
+    expandVideo();
+  });
+
+  // Al cargar la página, asegúrate de que todos los videos tengan el mismo tamaño
+  restoreSmallVideoSize();
+}
+
+setupVideoFullscreen('presentacionVideo');
+setupVideoFullscreen('presentacionVideo2');
+setupVideoFullscreen('presentacionVideo3');
+
+    // Imágenes: expandir/cerrar al hacer click
+    document.querySelectorAll('.img-container img').forEach(img => {
+      img.addEventListener('click', function () {
+        // Si ya hay overlay, no crear otro
+        if (document.querySelector('.img-overlay')) return;
+
+        // Crear overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'img-overlay';
+
+        // Crear imagen expandida
+        const expandedImg = document.createElement('img');
+        expandedImg.src = this.src;
+        expandedImg.alt = this.alt;
+
+        overlay.appendChild(expandedImg);
+        document.body.appendChild(overlay);
+
+        // Al hacer click en overlay o imagen, cerrar
+        overlay.addEventListener('click', function () {
+          overlay.remove();
+        });
+
+        // Cerrar con ESC
+        window.addEventListener('keydown', function escListener(e) {
+          if (e.key === 'Escape' && document.body.contains(overlay)) {
+            overlay.remove();
+            window.removeEventListener('keydown', escListener);
+          }
+        });
+      });
+    });   
+      // --- CONTADOR DE VISITAS Y DESCARGAS ---
+  // Utiliza localStorage para persistencia simple en el navegador
+
+  // Inicializar contadores si no existen
+  if (!localStorage.visitCount) localStorage.visitCount = 0;
+  if (!localStorage.winDownloadCount) localStorage.winDownloadCount = 0;
+  if (!localStorage.macDownloadCount) localStorage.macDownloadCount = 0;
+
+  // Incrementar visitas
+  localStorage.visitCount = Number(localStorage.visitCount) + 1;
+
+  // Mostrar contadores
+  function updateStats() {
+    document.getElementById('visitCount').textContent = `Visitas: ${localStorage.visitCount}`;
+    document.getElementById('winDownloadCount').textContent = `Descargas Windows: ${localStorage.winDownloadCount}`;
+    document.getElementById('macDownloadCount').textContent = `Descargas MacOS: ${localStorage.macDownloadCount}`;
+  }
+  updateStats();
+
+  // Detectar clicks en los botones de descarga
+  document.querySelectorAll('.btn-group a').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (this.textContent.includes('Windows')) {
+        localStorage.winDownloadCount = Number(localStorage.winDownloadCount) + 1;
+      }
+      if (this.textContent.includes('MacOS')) {
+        localStorage.macDownloadCount = Number(localStorage.macDownloadCount) + 1;
+      }
+      updateStats();
+    });
+  });
+  </script>
+</body>
+</html>
