@@ -1,0 +1,24 @@
+Vamos a descargar el programa desde el siguiente link
+
+
+https://supervic1123.github.io/asixtore/
+
+
+lo abrimos con clic derecho, ejecutar como administrador o doble clic.
+
+En Windows nos puede salir una advertencia de "Windows protegió su PC"
+
+damos clic en Más información y luego damos clic en el botón inferior
+
+Ejecutar de todas formas y se nos abre un instalador, presionamos
+
+siguiente, otra ves siguiente, aceptar e instalar y luego finalizar,
+
+se nos abrirá el programa, usuario y contraseña por defecto son admin
+
+y listo ya puedes usar el programa completo totalmente gratis.
+
+Para la instalación en Mac se hace normal como las otras aplicaciones.
+
+En la pagina web esta toda la información de como usar el programa.
+
