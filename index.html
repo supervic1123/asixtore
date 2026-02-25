@@ -289,81 +289,8 @@
       cursor: zoom-out;
       transition: box-shadow 0.2s;
     }
-    .like-dislike-container {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-    .like-dislike-container a {
-      display: inline-block;
-      transition: transform 0.2s;
-    }
-    .like-dislike-container a:hover {
-      transform: scale(1.08);
-    }
-    .like-dislike-container img {
-      border-radius: 6px;
-      transition: all 0.2s;
-    }
-    .like-dislike-container img:hover {
-      filter: brightness(1.2);
-      box-shadow: 0 0 16px rgba(0, 255, 136, 0.3);
-    }
     #dislikeImg:hover {
       box-shadow: 0 0 16px rgba(255, 51, 102, 0.3) !important;
-    }
-    .vote-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      padding: 3px 8px;
-      border: 2px solid;
-      border-radius: 10px;
-      background: transparent;
-      cursor: pointer;
-      font-size: 0.75rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      font-family: "Poppins", sans-serif;
-      min-width: 60px;
-    }
-    .vote-btn span:first-child {
-      font-size: 0.75rem;
-    }
-    .vote-btn span:last-child {
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-    .like-btn {
-      border-color: #00ff88;
-      color: #00ff88;
-    }
-    .like-btn:hover {
-      background: rgba(0, 255, 136, 0.1);
-      box-shadow: 0 0 16px rgba(0, 255, 136, 0.3);
-      transform: scale(1.05);
-    }
-    .like-btn.voted {
-      background: rgba(0, 255, 136, 0.2);
-      box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-    }
-    .dislike-btn {
-      border-color: #ff3366;
-      color: #ff3366;
-    }
-    .dislike-btn:hover {
-      background: rgba(255, 51, 102, 0.1);
-      box-shadow: 0 0 16px rgba(255, 51, 102, 0.3);
-      transform: scale(1.05);
-    }
-    .dislike-btn.voted {
-      background: rgba(255, 51, 102, 0.2);
-      box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
     }
     footer {
       width: 100%;
@@ -489,16 +416,6 @@
         <strong>¡Bienvenido!</strong> Descubre cómo Asixtore puede ayudarte a gestionar tu negocio de manera sencilla y eficiente.<br>
         Usa el menú superior para navegar entre descargas, videos, imágenes y contacto.<br><br>
         <img src="https://hits.sh/supervic1123.github.io/asixtore.svg?label=Visitas&color=blue&style=for-the-badge" alt="Contador de visitas">
-        <div class="like-dislike-container">
-          <button id="likeBtn" class="vote-btn like-btn">
-            <span>👍 ME GUSTA</span><br>
-            <span id="likeCount">0</span>
-          </button>
-          <button id="dislikeBtn" class="vote-btn dislike-btn">
-            <span>👎 NO ME GUSTA</span><br>
-            <span id="dislikeCount">0</span>
-          </button>
-        </div>
       </div>
     </section>
     <!-- DESCARGAS -->
@@ -1002,102 +919,6 @@ generateVideoThumbnails();
         });
       });
     });   
-  </script>
-  <script>
-    // Sistema de votos - Me gusta y No me gusta
-    const likeBtn = document.getElementById('likeBtn');
-    const dislikeBtn = document.getElementById('dislikeBtn');
-    const likeCount = document.getElementById('likeCount');
-    const dislikeCount = document.getElementById('dislikeCount');
-
-    // Claves de localStorage
-    const LIKE_COUNT_KEY = 'asixtore-total-likes';
-    const DISLIKE_COUNT_KEY = 'asixtore-total-dislikes';
-    const USER_VOTE_KEY = 'asixtore-user-vote'; // Guardar si ya votó (like/dislike/none)
-
-    // Inicializar contadores
-    function inicializarContadores() {
-      let likeTotal = parseInt(localStorage.getItem(LIKE_COUNT_KEY) || '0');
-      let dislikeTotal = parseInt(localStorage.getItem(DISLIKE_COUNT_KEY) || '0');
-      let userVote = localStorage.getItem(USER_VOTE_KEY) || 'none';
-
-      likeCount.textContent = likeTotal;
-      dislikeCount.textContent = dislikeTotal;
-
-      // Mostrar estado de votación anterior
-      if (userVote === 'like') {
-        likeBtn.classList.add('voted');
-      } else if (userVote === 'dislike') {
-        dislikeBtn.classList.add('voted');
-      }
-    }
-
-    // Click en Me gusta
-    likeBtn.addEventListener('click', function() {
-      let userVote = localStorage.getItem(USER_VOTE_KEY) || 'none';
-      let likeTotal = parseInt(localStorage.getItem(LIKE_COUNT_KEY) || '0');
-      let dislikeTotal = parseInt(localStorage.getItem(DISLIKE_COUNT_KEY) || '0');
-
-      if (userVote === 'like') {
-        // Ya votó like, deshacer voto
-        likeTotal--;
-        userVote = 'none';
-        likeBtn.classList.remove('voted');
-      } else {
-        // Cambiar de voto o nuevo voto
-        if (userVote === 'dislike') {
-          dislikeTotal--; // Quitar dislike anterior
-          dislikeBtn.classList.remove('voted');
-        }
-        likeTotal++; // Agregar like
-        userVote = 'like';
-        likeBtn.classList.add('voted');
-      }
-
-      // Guardar en localStorage
-      localStorage.setItem(LIKE_COUNT_KEY, likeTotal);
-      localStorage.setItem(DISLIKE_COUNT_KEY, dislikeTotal);
-      localStorage.setItem(USER_VOTE_KEY, userVote);
-
-      // Actualizar UI
-      likeCount.textContent = likeTotal;
-      dislikeCount.textContent = dislikeTotal;
-    });
-
-    // Click en No me gusta
-    dislikeBtn.addEventListener('click', function() {
-      let userVote = localStorage.getItem(USER_VOTE_KEY) || 'none';
-      let likeTotal = parseInt(localStorage.getItem(LIKE_COUNT_KEY) || '0');
-      let dislikeTotal = parseInt(localStorage.getItem(DISLIKE_COUNT_KEY) || '0');
-
-      if (userVote === 'dislike') {
-        // Ya votó dislike, deshacer voto
-        dislikeTotal--;
-        userVote = 'none';
-        dislikeBtn.classList.remove('voted');
-      } else {
-        // Cambiar de voto o nuevo voto
-        if (userVote === 'like') {
-          likeTotal--; // Quitar like anterior
-          likeBtn.classList.remove('voted');
-        }
-        dislikeTotal++; // Agregar dislike
-        userVote = 'dislike';
-        dislikeBtn.classList.add('voted');
-      }
-
-      // Guardar en localStorage
-      localStorage.setItem(LIKE_COUNT_KEY, likeTotal);
-      localStorage.setItem(DISLIKE_COUNT_KEY, dislikeTotal);
-      localStorage.setItem(USER_VOTE_KEY, userVote);
-
-      // Actualizar UI
-      likeCount.textContent = likeTotal;
-      dislikeCount.textContent = dislikeTotal;
-    });
-
-    // Inicializar al cargar
-    inicializarContadores();
   </script>
 </body>
 </html>
